@@ -6,18 +6,18 @@ on:
       - main
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        uses: docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
 
       - name: Build Docker Image
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest .
@@ -25,19 +25,15 @@ jobs:
       - name: Publish Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest
 
-    
   deploy:
-      needs: build
-      runs-on: aws-ec2
-      steps:
-        - uses: actions/checkout@v3
-        - name: Deploy to AWS
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD }}
-            script: |
-              cd /home/ubuntu
-              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest
-              docker run -d -p 3000:80 ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder
+    needs: build
+    runs-on: aws-ec2
+    steps:
+      - name: Pull image from Docker Hub
+        run: docker pull mdriyas17/ai-resume-builder:latest
+
+      - name: Delete old container
+        run: docker rm -f reactcontainer || true
+
+      - name: Run new container
+        run: docker run -d -p 3000:80 --name reactcontainer mdriyas17/ai-resume-builder:latest
