@@ -1,0 +1,39 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest .
+
+      - name: Publish Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest
+
+    
+    deploy:
+      needs: build
+      runs-on: aws-ec2
+
+      steps:
+        -name: Pull image docker hub
+          run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest
+        -name: Delete old container
+          run: docker rm -f reactcontainer
+        -name: Run new container
+          run: docker run -d -p 3000:80 --name reactcontainer ${{ secrets.DOCKERHUB_USERNAME }}/ai-resume-builder:latest
