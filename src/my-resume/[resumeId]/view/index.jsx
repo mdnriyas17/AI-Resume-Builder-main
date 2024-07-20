@@ -52,7 +52,7 @@ function ViewResume() {
         </div>
             
         </div>
-        <div className='my-10 mx-10 md:mx-20 lg:mx-36'>
+        <div className='my-5 mx-10 md:mx-10 lg:mx-18'>
         <div id="print-area" >
                 <ResumePreview/>
             </div>

@@ -29,7 +29,7 @@ function Dashboard() {
       mt-10
       "
       >
-        <AddResume />
+        {/* <AddResume /> */}
         {resumeList?.length > 0
           ? resumeList?.map((resume, index) => (
               <ResumeCardItem
