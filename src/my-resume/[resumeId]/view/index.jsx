@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { RWebShare } from 'react-web-share';
 import { ResumeInfoContext } from '@/context/ResumeInfoContext';
 import ResumePreview from '@/dashboard/resume/components/ResumePreview';
-
+import "../view/LoadingSpinner.css"
 function ViewResume() {
   const [resumeInfo, setResumeInfo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,11 @@ function ViewResume() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (error) {
