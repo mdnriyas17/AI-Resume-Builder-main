@@ -95,7 +95,7 @@ function ResumeCardItem({ resume, refreshData }) {
               View
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => navigation("/my-resume/" + resume?._id + "/view")}
+              onClick={() => console.log("download", resume?._id)}
             >
               Download
             </DropdownMenuItem>
