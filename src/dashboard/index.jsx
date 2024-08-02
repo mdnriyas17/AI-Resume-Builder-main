@@ -5,19 +5,37 @@ import GlobalApi from "./../../service/GlobalApi";
 import ResumeCardItem from "./components/ResumeCardItem";
 
 function Dashboard() {
+  // const { user } = useUser();
+  // const [resumeList, setResumeList] = useState([]);
+  // useEffect(() => {
+  //   user && GetResumesList();
+  // }, [user]);
+
+  // const GetResumesList = async () => {
+  //   GlobalApi.GetUserResumes(user?.primaryEmailAddress?.emailAddress).then(
+  //     (resp) => {
+  //       // console.log("resp.data.data", resp.data);
+  //       setResumeList(resp.data);
+  //     }
+  //   );
+  // };
   const { user } = useUser();
   const [resumeList, setResumeList] = useState([]);
+
   useEffect(() => {
-    user && GetResumesList();
+    if (user) {
+      GetResumesList();
+    }
   }, [user]);
 
-  const GetResumesList = () => {
-    GlobalApi.GetUserResumes(user?.primaryEmailAddress?.emailAddress).then(
-      (resp) => {
-        // console.log("resp.data.data", resp.data);
-        setResumeList(resp.data);
-      }
-    );
+  const GetResumesList = async () => {
+    try {
+      const response = await GlobalApi.GetUserResumes(user?.primaryEmailAddress?.emailAddress);
+      // console.log("response.data", response.data);
+      setResumeList(response.data);
+    } catch (error) {
+      console.error("Error fetching resumes:", error);
+    }
   };
   return (
     <div className="p-10 md:px-20 lg:px-32">

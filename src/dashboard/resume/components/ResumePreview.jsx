@@ -17,9 +17,9 @@ function ResumePreview() {
         borderColor:resumeInfo?.themeColor ? resumeInfo?.themeColor : 'black'
     }}>
         {/* Personal Detail  */}
-            <PersonalDetailPreview resumeInfo={resumeInfo} />
+        { resumeInfo?.firstName && <PersonalDetailPreview resumeInfo={resumeInfo} /> }
         {/* Summery  */}
-            <SummeryPreview resumeInfo={resumeInfo} />
+        {resumeInfo?.summery && <SummeryPreview resumeInfo={resumeInfo} />}
         {/* Professional Experience  */}
            {resumeInfo?.experience?.length>0&& <ExperiencePreview resumeInfo={resumeInfo} />}
         {/* Educational  */}
